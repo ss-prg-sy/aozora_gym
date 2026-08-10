@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歩いてどれだけ？ | キャンパス青空ジム</title>
+<link rel="stylesheet" href="campus.css">
+</head>
+<body>
+
+<div class="sky page">
+
+  <header class="phead">
+    <a href="index.html" class="back">← もどる</a>
+    <div class="phead-icon phead-icon-walk" aria-hidden="true">
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="22" cy="8" r="3.4"/>
+        <path d="M20 14l-4 8 5 4 2 7"/>
+        <path d="M16 22l-6 3"/>
+        <path d="M21 26l7-1"/>
+        <path d="M16 33l0-7"/>
+      </svg>
+    </div>
+    <h1 class="ptitle">歩いてどれだけ？</h1>
+    <p class="psub">スキマ時間、何分歩ける？<br>スライダーを動かして確かめてみよう。</p>
+  </header>
+
+  <main class="pbody">
+
+    <!-- ▼▼ 数値はすべて仮の概算。あとで正しい値に差し替える ▼▼ -->
+    <!-- 前提の仮値: 分速 約80m / 1分 約100歩 / 1分 約4kcal で計算 -->
+
+    <section class="card-slider">
+      <div class="minutes-display">
+        <span id="minVal">5</span><span class="min-unit">分</span> 歩くと…
+      </div>
+
+      <input type="range" id="slider" class="slider" min="1" max="10" value="5" step="1">
+      <div class="slider-scale"><span>1分</span><span>10分</span></div>
+
+      <div class="result-grid">
+        <div class="result-box">
+          <div class="result-label">距離</div>
+          <div class="result-val"><span id="dist">400</span><span class="unit">m</span></div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">歩数</div>
+          <div class="result-val"><span id="steps">500</span><span class="unit">歩</span></div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">消費</div>
+          <div class="result-val"><span id="kcal">20</span><span class="unit">kcal</span></div>
+        </div>
+      </div>
+
+      <div class="conv-line">
+        だいたい <b id="conv">グミ 約4粒分</b>
+      </div>
+    </section>
+
+    <section class="card-accent">
+      <h2 class="sec-h-w">☝ ちょっと寄り道のススメ</h2>
+      <p>次の教室まで、あえて遠回り。<br>1日の中の「歩ける5分」を見つけるだけで、運動はもう始まってる。</p>
+    </section>
+
+    <p class="cheer">今日は、いつもより少しだけ遠回りしてみない？</p>
+
+    <a href="index.html" class="back-btn">← メニューにもどる</a>
+  </main>
+
+  <footer class="foot">
+    <p>キャンパス青空ジム</p>
+    <p class="foot-note">スポーツ政策学生会議（SPJ）ゼミ企画 ／ 試作版</p>
+  </footer>
+</div>
+
+<script>
+  // ▼▼ 仮の計算式。あとで正しい値・換算に差し替える ▼▼
+  // 1分あたり: 距離80m / 歩数100歩 / 消費4kcal と仮定
+  const PER_MIN_DIST = 80;
+  const PER_MIN_STEPS = 100;
+  const PER_MIN_KCAL = 4;
+
+  const slider = document.getElementById("slider");
+  const minVal = document.getElementById("minVal");
+  const dist = document.getElementById("dist");
+  const steps = document.getElementById("steps");
+  const kcal = document.getElementById("kcal");
+  const conv = document.getElementById("conv");
+
+  function update() {
+    const min = Number(slider.value);
+    const kcalVal = min * PER_MIN_KCAL;
+    minVal.textContent = min;
+    dist.textContent = min * PER_MIN_DIST;
+    steps.textContent = min * PER_MIN_STEPS;
+    kcal.textContent = kcalVal;
+
+    // お菓子換算（仮）: グミ1粒5kcal / エナドリ1本50kcal / 学食カレー700kcal
+    let text;
+    if (kcalVal < 30) {
+      text = "グミ 約" + Math.max(1, Math.round(kcalVal / 5)) + "粒分";
+    } else if (kcalVal < 45) {
+      text = "エナジードリンク 約" + (kcalVal / 50).toFixed(1) + "本分";
+    } else {
+      text = "学食カレー 約" + Math.round((kcalVal / 700) * 100) + "%分";
+    }
+    conv.textContent = text;
+
+    // スライダーの色を進み具合に合わせて塗る
+    const pct = ((min - 1) / 9) * 100;
+    slider.style.background =
+      "linear-gradient(90deg, var(--ryu-red) 0%, var(--ryu-red) " + pct + "%, #d7e6f2 " + pct + "%, #d7e6f2 100%)";
+  }
+
+  slider.addEventListener("input", update);
+  update();
+</script>
+
+</body>
+</html>
